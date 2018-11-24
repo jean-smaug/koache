@@ -1,20 +1,20 @@
-const NodeCache = require("node-cache");
+const NodeCache = require('node-cache')
 
 module.exports = options => {
-  const cache = new NodeCache(options);
+  const cache = new NodeCache(options)
 
   return async (ctx, next) => {
-    const cacheKey = `cache${ctx.request.url}`;
+    const cacheKey = `cache${ctx.request.url}`
 
-    const data = cache.get(cacheKey);
+    const data = cache.get(cacheKey)
     if (!data) {
-      await next();
+      await next()
 
-      cache.set(cacheKey, ctx.response.body);
+      cache.set(cacheKey, ctx.response.body)
 
-      return;
+      return
     }
 
-    ctx.body = data;
-  };
-};
+    ctx.body = data
+  }
+}

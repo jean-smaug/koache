@@ -1,14 +1,17 @@
-const Koa = require("koa");
-const Cache = require("./index");
-const got = require("got");
-const app = new Koa();
-const cache = Cache({ stdTTL: 120 });
+const Koa = require('koa')
+const cache = require('./index')
 
-app.use(cache);
+const app = new Koa()
+
+app.use(cache({ stdTTL: 120 }))
+
+app.use(async (ctx, next) => {
+  await new Promise(resolve => setTimeout(resolve, 2000))
+  next()
+})
 
 app.use(async ctx => {
-  //   ctx.body = (await got("https://jsonplaceholder.typicode.com/posts")).body;
-  ctx.body = "aze";
-});
+  ctx.body = 'aze'
+})
 
-app.listen(3001, () => console.log("listening..."));
+app.listen(3001, () => console.log('listening...'))
