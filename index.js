@@ -1,22 +1,25 @@
 const NodeCache = require("node-cache");
-const cache = new NodeCache({ stdTTL: 10, checkperiod: 10 });
 
-module.exports = (ctx, next) => {
-  const cacheKey = `cache/${ctx.request.url}`;
+module.exports = options => {
+  const cache = new NodeCache(options);
 
-  cache.get(cacheKey, async (err, data) => {
-    if (err) {
-      next();
-      return;
-    }
-    if (!data) {
-      await next();
+  return (ctx, next) => {
+    const cacheKey = `cache/${ctx.request.url}`;
 
-      cache.set(cacheKey, ctx.response.body);
+    cache.get(cacheKey, async (err, data) => {
+      if (err) {
+        next();
+        return;
+      }
+      if (!data) {
+        await next();
 
-      return;
-    }
+        cache.set(cacheKey, ctx.response.body);
 
-    ctx.body = data;
-  });
+        return;
+      }
+
+      ctx.body = data;
+    });
+  };
 };
